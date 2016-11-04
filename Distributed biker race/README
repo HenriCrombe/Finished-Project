@@ -1,0 +1,77 @@
+HOW TO INSTALL:
+---------------
+
+The project contains two folders (biker_problem0 and biker_problem1). Biker_problem0 contains the implementation of the best effort broadcast whereas biker_problem1 contains the implementation of the total order broadcast.
+
+If you want to run one of these implementations:
+
+	- You need to open a terminal at the root of the project (e.g. cd /biker_problem0)
+	- Clean the metadata : sudo make distclean
+	- Build the project: sudo make devrel
+	- Start the nodes: for d in dev/dev*; do sudo $d/bin/biker start;done
+	- Join the nodes inside the cluster: 
+			for d in dev/dev{2,3,4,5}; do $d/bin/biker-admin join biker1@127.0.0.1; done
+
+	/!\ Before going further, make sure the cluster is balanced (i.e. when you enter: sudo ./dev/dev1/bin/biker-admin member_status, the status column must be set to valid for all nodes and the ring column must be > 0% for all nodes) /!\
+
+	- At this point, you can launch 5 consoles and attach each console to a node:
+			sudo ./dev/dev*/bin/biker attach (replace * by 1, 2, 3, 4 or 5)
+
+	- Then, run biker:start_race(). in each console
+
+	/!\ you need to enter "biker:start_race()." command into each console before passing any others input to the program /!\ 
+
+
+HOW TO PLAY:
+------------
+
+The program runs in round. At the beginning of each round, the program displays the state of the race (i.e. position of each biker) and asks for a user's input. It looks like that :
+
+					######################################################################
+
+					State of the race (max -> min distance crossed): 
+
+					 biker4
+					                  {biker2, biker5}
+					                  biker5
+					                                    biker1
+					                                                      biker3
+
+					Energy : 64
+					Position : 80
+
+					What do you want:
+
+					 -Entrer a new speed ? write: {speed, X}.
+
+					 -Follow a player ? 
+					 -List of correct biker to follow: [biker1,biker3,biker5]
+					 -Write: {follow, X}.
+
+					 -Use the boost ? write: boost.
+
+					Your choice: 
+
+
+Three possible inputs are expected:
+
+	- {speed, X} (e.g. {speed, 5}.)
+		it indicates the speed of the biker for the current round
+
+	- {follow, X} (e.g. {follow,biker3}.)
+		it indicates who you want to follow during the current round.
+		X can only be biker1, biker2, biker3, biker4 or biker5. If you enter something else then the program will fail. Furthermore, a list indicates which bikers can be followed. You must not use other bikers than those of the list.
+
+	- boost.
+		comsume all your remaining energy.
+
+	- If you enter another command (a wrong one) that doesn't match the pattern of {follow, X} and {speed, X} then the program will automatically used {speed,5}. as input.
+
+
+/!\ Don't forget the . at the end of these commands (even the wrong one) /!\
+
+DETAILS:
+--------
+
+Rounds are synchronized and the program expects only one command per round. Once you have entered a command into the console of each correct bikers (i.e. bikers having remaining energy > 0). Wait a few seconds to let the program start the next round. 
+

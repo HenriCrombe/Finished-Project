@@ -1,0 +1,41 @@
+Group 3 : Emergency system for falling objects
+----------------------------------------------
+
+The project is divided in two modules :
+1) The server mote (UDP emergency server, border-router, web server)
+2) The probe mote (emergency client, REST server)
+
+Compiling th source :
+1) Extract the project into contiki folder (or anywhere else, but the Makefile must points to contiki forlder)
+2) Compile "server" sources and upload to the mote:
+   - cd server
+   - make emergency_server
+   - sudo chown $USER:$USER /dev/ttyUSB0 
+   - make MOTES=/dev/ttyUSB0 emergency_server.upload
+   - make connect-router (to make the tunslip tunel between the computer and the server)
+3) Compile "probe" sources and upload to mote:
+   - cd probe
+   - make probe
+   - sudo chown $USER:$USER /dev/ttyUSB1
+   - make MOTES=/dev/ttyUSB1 probe.upload
+
+--> When the system is started and that every processes are runing:
+1) The web-server of the emergency server can be accessed using a typical web-browser by visiting the URL:
+   http://[aaaa::c30c:0:0:1]
+
+2) The probe REST server can accessed :
+   - make connect-router (if not yet done)
+   - Open firefox and visit the URL below to connect to the probe REST server :
+     coap://[aaaa::c30c:0:0:2]:5683/
+   - The freefall thresholds of the mote can be changed at this URL
+     coap://[aaaa::c30c:0:0:2]:5683/thresholds
+   - Make a POST request with the payload set to :
+     ff_time_threshold=value (OR)
+     ff_accel_threshold=value
+     Where value is an acceptable threshold for the accelerometer :
+     ff_time_threshold = 50|100|200|300|400|500|600 miliseconds
+     ff_accel_threshold = 300|600|1000 milig
+
+--> When the system is started 
+
+
